@@ -20,7 +20,7 @@ node('built-in')
     stage('continuosdelivery')
     {
         input message: 'Need approval from the DM!', submitter: 'srinivasu'
-        deploy adapters: [tomcat9(credentialsId: 'c1748f7f-70bc-4906-8733-37ae7d141eca', path: '', url: 'http://172.31.27.175:8080')], contextPath: 'prodapp', war: '**/*.war'
+        sh 'scp /home/ubuntu/.jenkins/workspace/scriptedpipeline1/webapp/target/webapp.warubuntu@:172.31.27.175/var/lib/tomcat9/webapps/prodapp.war'
     }
     
 }
