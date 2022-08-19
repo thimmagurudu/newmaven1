@@ -10,7 +10,7 @@ node('built-in')
     }
     stage('continuosdeployment')
     {
-    sh 'scp /home/ubuntu/.jenkins/workspace/scriptedpipeline2/webapp/target/webapp.war ubuntu@172.31.29.254:/var/lib/tomcat9/webapp/target/testapp.war'
+    sh 'scp /home/ubuntu/.jenkins/workspace/scriptedpipeline1/webapp/target/webapp.war ubuntu@172.31.29.254:/var/lib/tomcat9/webapp/target/testapp.war'
     }
     stage('continuostesting')
     {
