@@ -1,1 +1,60 @@
-
+@Library('mylibrary')_
+pipeline
+{
+    agent any
+    stages
+    {
+        stage('contDownload')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.newGit("https://github.com/intelliqittrainings/maven.git")
+                }
+            }
+        }
+        stage('contBuild')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.newMaven()
+                }
+            }
+        }
+        stage('contDeployment')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.newDeploy("declarativepipelinewithsharedlibraries","172.31.29.254","testerapp")
+                }
+            }
+        }
+        stage('contTesting')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.newGit("https://github.com/intelliqittrainings/FunctionalTesting.git")
+                    cicd.runselenium("declarativepipelinewithsharedlibraries")
+                }
+            }
+        }
+        stage('contDelivery')
+        {
+            steps
+            {
+                script
+                {
+                cicd.newDeploy("declarativepipelinewithsharedlibraries","172.31.27.175","productapp")
+                }
+            }
+        }
+        
+    }
+}
