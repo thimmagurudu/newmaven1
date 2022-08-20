@@ -1,1 +1,64 @@
-
+node('built-in')
+    {
+        stage('contDowload')
+            {
+                   try
+               {
+                   git 'https://github.com/intelliqittrainings/maven.git' 
+               }
+                    catch(Exception e1)
+                   {
+                        mail bcc: '', body: 'jenkins unable to download dev code from git ', cc: '', from: '', replyTo: '', subject: 'download failed', to: 'git.admin@gmail.com'
+                        exit()
+                   }
+            } 
+        
+        stage('contBuild')
+        {
+                    try
+                    {
+                       sh 'mvn package' 
+                    }
+                    catch(Exception e2)
+                    {
+                        mail bcc: '', body: 'jenkins unable to create artifact', cc: '', from: '', replyTo: '', subject: 'build failed', to: 'dev.team@gmail.com'
+                        exit()
+                    }
+        }
+        stage('contdeployment')
+        {
+                    try
+                    {
+                    sh 'scp /home/ubuntu/.jenkins/workspace/scriptedpipeline3/webapp/target/webapp.war ubuntu@172.31.29.254:/var/lib/tomcat9/webapps/test2app.war'
+                    }
+                    catch(Exception e3)
+                    {
+                        mail bcc: '', body: 'jenkins unable to deploy into tomcat on the qa server', cc: '', from: '', replyTo: '', subject: 'deployment failed', to: 'middleware.team@gmail.com'
+                        exit()
+                    }
+        }
+        stage('conttesting')
+        {
+                    try
+                    {
+                      git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
+                      sh 'java -jar /home/ubuntu/.jenkins/workspace/scriptedpipeline3/testing.jar'  
+                    }
+                    catch(Exception e4)
+                    {
+                        mail bcc: '', body: 'selenium scripts are showing a failure result', cc: '', from: '', replyTo: '', subject: 'testing failed', to: 'qa.team@gmail.com'
+                        exit()
+                    }
+        }
+        stage('contdelivery')
+        {
+                    try
+                    {
+                      sh 'scp /home/ubuntu/.jenkins/workspace/scriptedpipeline3/webapp/target/webapp.war ubuntu@172.31.27.175:/var/lib/tomcat9/webapps/prodsapp.war'
+                    }
+                    catch(Exception e5)
+                    {
+                        mail bcc: '', body: 'jenkins unable to deploy into tomcat on prod server', cc: '', from: '', replyTo: '', subject: 'delivery failed', to: 'delivery.team@gmail.com'
+                    }
+        }
+    }
